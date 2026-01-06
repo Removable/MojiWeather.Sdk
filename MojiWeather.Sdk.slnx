@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MojiWeather.Sdk/MojiWeather.Sdk.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MojiWeather.Sdk.Tests/MojiWeather.Sdk.Tests.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/MojiWeather.Sdk.Sample/MojiWeather.Sdk.Sample.csproj" />
+  </Folder>
+</Solution>
