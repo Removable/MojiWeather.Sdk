@@ -8,21 +8,34 @@ namespace MojiWeather.Sdk.Serialization.Converters;
 /// </summary>
 public sealed class UnixMillisecondsConverter : JsonConverter<DateTimeOffset>
 {
-    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        long milliseconds = reader.TokenType switch
-        {
-            JsonTokenType.String => long.TryParse(reader.GetString(), out var result) ? result : 0,
-            JsonTokenType.Number => reader.GetInt64(),
-            JsonTokenType.Null => 0,
-            _ => throw new JsonException($"Unexpected token type: {reader.TokenType}")
-        };
-
-        return milliseconds > 0
-            ? DateTimeOffset.FromUnixTimeMilliseconds(milliseconds)
-            : DateTimeOffset.MinValue;
-    }
+    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType == JsonTokenType.Null
+            ? throw new JsonException("Null value is not allowed for DateTimeOffset.")
+            : DateTimeOffset.FromUnixTimeMilliseconds(JsonParseHelper.ParseLong(ref reader));
 
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
         => writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
+}
+
+/// <summary>
+/// Unix时间戳(毫秒)转可空DateTimeOffset的JSON转换器
+/// </summary>
+public sealed class UnixMillisecondsNullableConverter : JsonConverter<DateTimeOffset?>
+{
+    public override DateTimeOffset? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType == JsonTokenType.Null
+            ? null
+            : DateTimeOffset.FromUnixTimeMilliseconds(JsonParseHelper.ParseLong(ref reader));
+
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset? value, JsonSerializerOptions options)
+    {
+        if (value is null)
+        {
+            writer.WriteNullValue();
+        }
+        else
+        {
+            writer.WriteNumberValue(value.Value.ToUnixTimeMilliseconds());
+        }
+    }
 }

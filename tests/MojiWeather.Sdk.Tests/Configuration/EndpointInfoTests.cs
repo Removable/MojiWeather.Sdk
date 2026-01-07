@@ -8,21 +8,28 @@ public class EndpointInfoTests
 {
     [Theory]
     [InlineData(SubscriptionTier.Trial, SubscriptionTier.Trial, true)]
-    [InlineData(SubscriptionTier.Pm25, SubscriptionTier.Trial, true)]
-    [InlineData(SubscriptionTier.Professional, SubscriptionTier.Trial, true)]
+    [InlineData(SubscriptionTier.Pm25, SubscriptionTier.Trial, false)]
+    [InlineData(SubscriptionTier.Professional, SubscriptionTier.Trial, false)]
+    [InlineData(SubscriptionTier.Basic, SubscriptionTier.Trial, false)]
     [InlineData(SubscriptionTier.Trial, SubscriptionTier.Pm25, false)]
     [InlineData(SubscriptionTier.Pm25, SubscriptionTier.Pm25, true)]
-    [InlineData(SubscriptionTier.Professional, SubscriptionTier.Pm25, true)]
+    [InlineData(SubscriptionTier.Professional, SubscriptionTier.Pm25, false)]
+    [InlineData(SubscriptionTier.Basic, SubscriptionTier.Pm25, false)]
     [InlineData(SubscriptionTier.Trial, SubscriptionTier.Professional, false)]
     [InlineData(SubscriptionTier.Pm25, SubscriptionTier.Professional, false)]
     [InlineData(SubscriptionTier.Professional, SubscriptionTier.Professional, true)]
+    [InlineData(SubscriptionTier.Basic, SubscriptionTier.Professional, false)]
+    [InlineData(SubscriptionTier.Trial, SubscriptionTier.Basic, false)]
+    [InlineData(SubscriptionTier.Pm25, SubscriptionTier.Basic, false)]
+    [InlineData(SubscriptionTier.Professional, SubscriptionTier.Basic, false)]
+    [InlineData(SubscriptionTier.Basic, SubscriptionTier.Basic, true)]
     public void IsAccessibleWith_ShouldReturnCorrectResult(
         SubscriptionTier userTier,
         SubscriptionTier requiredTier,
         bool expectedResult)
     {
         // Arrange
-        var endpoint = new EndpointInfo("Test", "token123", "/test", requiredTier);
+        var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", requiredTier);
 
         // Act
         var result = endpoint.IsAccessibleWith(userTier);
@@ -39,7 +46,6 @@ public class EndpointInfoTests
 
         // Assert
         options.Tier.Should().Be(SubscriptionTier.Trial);
-        options.QueryType.Should().Be(LocationQueryType.Coordinates);
         options.UseHttps.Should().BeTrue();
         options.Timeout.Should().Be(TimeSpan.FromSeconds(30));
         options.Retry.Should().NotBeNull();
