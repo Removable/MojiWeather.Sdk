@@ -9,7 +9,7 @@
     <AssemblyName>MojiWeather.Sdk</AssemblyName>
 
     <!-- Package Info -->
-    <PackageId>MojiWeather.Sdk</PackageId>
+    <PackageId>Removable.MojiWeather.Sdk</PackageId>
     <Version>1.0.0</Version>
     <Authors>MojiWeather SDK Contributors</Authors>
     <Description>C# SDK for Moji Weather API (Alibaba Cloud API Marketplace)</Description>
