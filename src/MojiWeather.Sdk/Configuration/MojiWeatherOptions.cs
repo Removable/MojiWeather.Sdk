@@ -21,11 +21,6 @@ public sealed class MojiWeatherOptions
     public SubscriptionTier Tier { get; set; } = SubscriptionTier.Trial;
 
     /// <summary>
-    /// 默认查询类型
-    /// </summary>
-    public LocationQueryType QueryType { get; set; } = LocationQueryType.Coordinates;
-
-    /// <summary>
     /// 是否使用HTTPS
     /// </summary>
     public bool UseHttps { get; set; } = true;
@@ -41,11 +36,13 @@ public sealed class MojiWeatherOptions
     public RetryOptions Retry { get; set; } = new();
 
     /// <summary>
-    /// API基础URL
+    /// 端点Token配置（可选覆盖默认值）
     /// </summary>
-    internal string BaseUrl => UseHttps
-        ? "https://aliv18.data.moji.com"
-        : "http://aliv18.data.moji.com";
+    /// <remarks>
+    /// Token是API端点标识符，默认值来自官方API文档。
+    /// 可通过配置文件覆盖以支持测试或API更新场景。
+    /// </remarks>
+    public EndpointTokens Tokens { get; set; } = new();
 }
 
 /// <summary>
@@ -93,20 +90,4 @@ public enum SubscriptionTier
     /// 基础版
     /// </summary>
     Basic = 3
-}
-
-/// <summary>
-/// 位置查询类型
-/// </summary>
-public enum LocationQueryType
-{
-    /// <summary>
-    /// 经纬度查询
-    /// </summary>
-    Coordinates,
-
-    /// <summary>
-    /// 城市ID查询
-    /// </summary>
-    CityId
 }

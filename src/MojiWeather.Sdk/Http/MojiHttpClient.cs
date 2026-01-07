@@ -34,23 +34,23 @@ public sealed class MojiHttpClient(
                 endpoint.Name, endpoint.MinimumTier, _options.Tier);
 
             return ApiResponse<T>.Failure(-1,
-                $"Endpoint '{endpoint.Name}' requires {endpoint.MinimumTier} tier or higher.");
+                $"Endpoint '{endpoint.Name}' requires {endpoint.MinimumTier} tier.");
         }
 
         // 构建请求
-        var url = $"{_options.BaseUrl}{endpoint.Path}";
+        var url = $"{endpoint.BaseUrl}{endpoint.Path}";
         var formData = BuildFormData(endpoint.Token, location, additionalParameters);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, url);
         request.Headers.Authorization = new AuthenticationHeaderValue("APPCODE", _options.AppCode);
         request.Content = new FormUrlEncodedContent(formData);
 
-        logger.LogDebug("Sending request to {Url} with token {Token}",
-            url, endpoint.Token[..8] + "...");
+        logger.LogDebug("Sending request to {Url} for endpoint {EndpointName}",
+            url, endpoint.Name);
 
         try
         {
-            using var response = await httpClient.SendAsync(request, cancellationToken);
+            using var response = await httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             // 处理认证错误
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -58,7 +58,7 @@ public sealed class MojiHttpClient(
                 throw new AuthenticationException("Invalid AppCode or insufficient permissions.");
             }
 
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
+            var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
             // 尝试解析响应
             var result = JsonSerializer.Deserialize<ApiResponse<T>>(content, MojiJsonContext.SerializerOptions);
@@ -107,7 +107,7 @@ public sealed class MojiHttpClient(
         {
             foreach (var (key, value) in additionalParameters)
             {
-                formData[key] = value;
+                formData.TryAdd(key, value);
             }
         }
 

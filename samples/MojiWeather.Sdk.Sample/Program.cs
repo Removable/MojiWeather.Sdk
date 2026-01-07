@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MojiWeather.Sdk.Abstractions;
@@ -6,6 +7,9 @@ using MojiWeather.Sdk.Extensions;
 
 // 创建主机
 var builder = Host.CreateApplicationBuilder(args);
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 // 配置墨迹天气SDK
 builder.Services.AddMojiWeather(options =>
@@ -30,7 +34,7 @@ Console.WriteLine("=== 墨迹天气 SDK 示例 ===\n");
 Console.WriteLine("正在获取北京天气实况...\n");
 var condition = await weatherClient.Weather.GetBriefConditionAsync(beijing);
 
-if (condition.IsSuccess && condition.Data?.Condition is not null)
+if (condition is { IsSuccess: true, Data.Condition: not null })
 {
     var c = condition.Data.Condition;
     Console.WriteLine($"城市: {condition.Data.City?.City}");
@@ -56,7 +60,7 @@ Console.WriteLine("\n---\n");
 Console.WriteLine("正在获取3天天气预报...\n");
 var forecast = await weatherClient.Forecast.GetForecast3DaysAsync(beijing);
 
-if (forecast.IsSuccess && forecast.Data?.Forecasts is not null)
+if (forecast is { IsSuccess: true, Data.Forecasts: not null })
 {
     foreach (var day in forecast.Data.Forecasts)
     {
@@ -76,7 +80,7 @@ Console.WriteLine("\n---\n");
 Console.WriteLine("正在获取空气质量...\n");
 var aqi = await weatherClient.AirQuality.GetBriefAqiAsync(beijing);
 
-if (aqi.IsSuccess && aqi.Data?.Aqi is not null)
+if (aqi is { IsSuccess: true, Data.Aqi: not null })
 {
     var a = aqi.Data.Aqi;
     Console.WriteLine($"AQI: {a.Value} ({a.Level})");

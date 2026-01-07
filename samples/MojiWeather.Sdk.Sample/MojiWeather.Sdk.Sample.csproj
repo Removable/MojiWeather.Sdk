@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>MojiWeather.Sdk.Sample</RootNamespace>
+    <UserSecretsId>d5be4ae2-bee2-4946-8516-8007a811b0c6</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

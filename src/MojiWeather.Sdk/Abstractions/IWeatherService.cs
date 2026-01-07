@@ -1,4 +1,3 @@
-using MojiWeather.Sdk.Abstractions;
 using MojiWeather.Sdk.Models.Common;
 using MojiWeather.Sdk.Models.Weather;
 

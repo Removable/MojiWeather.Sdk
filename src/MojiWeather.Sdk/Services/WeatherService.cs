@@ -1,6 +1,5 @@
 using MojiWeather.Sdk.Abstractions;
 using MojiWeather.Sdk.Configuration;
-using MojiWeather.Sdk.Configuration.Endpoints;
 using MojiWeather.Sdk.Http;
 using MojiWeather.Sdk.Models.Common;
 using MojiWeather.Sdk.Models.Weather;
@@ -10,18 +9,17 @@ namespace MojiWeather.Sdk.Services;
 /// <summary>
 /// 天气实况服务实现
 /// </summary>
-public sealed class WeatherService(IMojiHttpClient httpClient) : IWeatherService
+public sealed class WeatherService(
+    IMojiHttpClient httpClient,
+    IEndpointProvider endpointProvider) : IWeatherService
 {
     /// <inheritdoc />
     public async Task<ApiResponse<BriefConditionData>> GetBriefConditionAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.BriefCondition
-            : CityIdEndpoints.BriefCondition;
-
-        return await httpClient.SendAsync<BriefConditionData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetBriefCondition(location);
+        return await httpClient.SendAsync<BriefConditionData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -29,10 +27,7 @@ public sealed class WeatherService(IMojiHttpClient httpClient) : IWeatherService
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.DetailedCondition
-            : CityIdEndpoints.DetailedCondition;
-
-        return await httpClient.SendAsync<DetailedConditionData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetDetailedCondition(location);
+        return await httpClient.SendAsync<DetailedConditionData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

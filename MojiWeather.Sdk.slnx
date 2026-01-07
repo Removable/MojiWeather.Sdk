@@ -8,4 +8,7 @@
   <Folder Name="/samples/">
     <Project Path="samples/MojiWeather.Sdk.Sample/MojiWeather.Sdk.Sample.csproj" />
   </Folder>
+  <Folder Name="/workflows/">
+    <File Path=".github/workflows/build.yml" />
+  </Folder>
 </Solution>

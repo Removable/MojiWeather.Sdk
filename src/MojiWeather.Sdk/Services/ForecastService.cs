@@ -1,5 +1,5 @@
 using MojiWeather.Sdk.Abstractions;
-using MojiWeather.Sdk.Configuration.Endpoints;
+using MojiWeather.Sdk.Configuration;
 using MojiWeather.Sdk.Http;
 using MojiWeather.Sdk.Models.Common;
 using MojiWeather.Sdk.Models.Weather;
@@ -9,18 +9,17 @@ namespace MojiWeather.Sdk.Services;
 /// <summary>
 /// 天气预报服务实现
 /// </summary>
-public sealed class ForecastService(IMojiHttpClient httpClient) : IForecastService
+public sealed class ForecastService(
+    IMojiHttpClient httpClient,
+    IEndpointProvider endpointProvider) : IForecastService
 {
     /// <inheritdoc />
     public async Task<ApiResponse<DailyForecastData>> GetForecast3DaysAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.Forecast3Days
-            : CityIdEndpoints.Forecast3Days;
-
-        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetForecast3Days(location);
+        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -28,11 +27,8 @@ public sealed class ForecastService(IMojiHttpClient httpClient) : IForecastServi
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.Forecast6Days
-            : CityIdEndpoints.Forecast6Days;
-
-        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetForecast6Days(location);
+        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -40,11 +36,8 @@ public sealed class ForecastService(IMojiHttpClient httpClient) : IForecastServi
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.Forecast15Days
-            : CityIdEndpoints.Forecast15Days;
-
-        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetForecast15Days(location);
+        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -52,11 +45,8 @@ public sealed class ForecastService(IMojiHttpClient httpClient) : IForecastServi
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
-        var endpoint = location.IsCoordinatesQuery
-            ? CoordinatesEndpoints.Forecast24Hours
-            : CityIdEndpoints.Forecast24Hours;
-
-        return await httpClient.SendAsync<HourlyForecastData>(endpoint, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetForecast24Hours(location);
+        return await httpClient.SendAsync<HourlyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -70,7 +60,7 @@ public sealed class ForecastService(IMojiHttpClient httpClient) : IForecastServi
             return ApiResponse<ShortForecastData>.Failure(-1, "Short forecast only supports coordinates query.");
         }
 
-        return await httpClient.SendAsync<ShortForecastData>(
-            CoordinatesEndpoints.ShortForecast, location, cancellationToken: cancellationToken);
+        var endpoint = endpointProvider.GetShortForecast();
+        return await httpClient.SendAsync<ShortForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }
