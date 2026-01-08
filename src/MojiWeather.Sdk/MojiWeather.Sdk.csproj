@@ -16,6 +16,7 @@
     <PackageTags>weather;moji;sdk;api;china</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>weather.png</PackageIcon>
     <RepositoryUrl>https://github.com/Removable/MojiWeather.Sdk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Removable/MojiWeather.Sdk</PackageProjectUrl>
@@ -29,6 +30,9 @@
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="Images\weather.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
