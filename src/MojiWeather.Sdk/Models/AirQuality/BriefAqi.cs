@@ -30,23 +30,23 @@ public sealed record BriefAqi
     /// AQI值
     /// </summary>
     [JsonPropertyName("value")]
-    public int Value { get; init; }
+    public required string Value { get; init; }
 
     /// <summary>
-    /// AQI等级描述
+    /// 城市名称
     /// </summary>
-    [JsonPropertyName("level")]
-    public string? Level { get; init; }
+    [JsonPropertyName("cityName")]
+    public required string CityName { get; init; }
 
     /// <summary>
-    /// 主要污染物
+    /// 更新时间（时间戳，单位毫秒）
     /// </summary>
-    [JsonPropertyName("primaryPollutant")]
-    public string? PrimaryPollutant { get; init; }
+    [JsonPropertyName("pubtime")]
+    public required string PublishTimestamp { get; init; }
 
     /// <summary>
     /// 更新时间
     /// </summary>
-    [JsonPropertyName("pubtime")]
-    public string? PublishTime { get; init; }
+    [JsonPropertyName("publishTime")]
+    public DateTimeOffset PublishTime => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(PublishTimestamp));
 }

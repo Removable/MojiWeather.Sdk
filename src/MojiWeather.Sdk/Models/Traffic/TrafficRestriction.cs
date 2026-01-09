@@ -18,7 +18,7 @@ public sealed record TrafficRestrictionData
     /// 限行信息
     /// </summary>
     [JsonPropertyName("limit")]
-    public TrafficRestriction? Limit { get; init; }
+    public IReadOnlyList<TrafficRestriction>? Limit { get; init; }
 }
 
 /// <summary>
@@ -30,41 +30,39 @@ public sealed record TrafficRestriction
     /// 日期
     /// </summary>
     [JsonPropertyName("date")]
-    public string? Date { get; init; }
-
-    /// <summary>
-    /// 是否限行
-    /// </summary>
-    [JsonPropertyName("isLimit")]
-    public bool IsLimit { get; init; }
+    public DateTime? Date { get; init; }
 
     /// <summary>
     /// 限行尾号
+    /// <para>
+    /// W表示当天不限行，S表示单号限行，D表示双号限行，27表示限行的尾号是2和7，其它的数字同理。
+    /// </para>
     /// </summary>
-    [JsonPropertyName("tailNumber")]
-    public string? TailNumber { get; init; }
+    [JsonPropertyName("prompt")]
+    public string? Prompt { get; init; }
 
-    /// <summary>
-    /// 限行时段描述
-    /// </summary>
-    [JsonPropertyName("time")]
-    public string? Time { get; init; }
+    [JsonPropertyName("promptDesc")]
+    public string? PromptDescription => Prompt switch
+    {
+        "W" => "不限行",
+        "S" => "单号限行",
+        "D" => "双号限行",
+        _ => GetPromptDescriptionForNumberValue(Prompt)
+    };
 
-    /// <summary>
-    /// 限行区域
-    /// </summary>
-    [JsonPropertyName("area")]
-    public string? Area { get; init; }
+    private static string? GetPromptDescriptionForNumberValue(string? prompt)
+    {
+        if (prompt == null)
+        {
+            return null;
+        }
 
-    /// <summary>
-    /// 限行备注
-    /// </summary>
-    [JsonPropertyName("remark")]
-    public string? Remark { get; init; }
+        if (int.TryParse(prompt, out _))
+        {
+            var chars = prompt.ToCharArray();
+            return $"限行尾号{string.Join("、", chars)}";
+        }
 
-    /// <summary>
-    /// 处罚说明
-    /// </summary>
-    [JsonPropertyName("penalty")]
-    public string? Penalty { get; init; }
+        return prompt;
+    }
 }

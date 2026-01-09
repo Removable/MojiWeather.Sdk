@@ -82,12 +82,12 @@ public enum SubscriptionTier
     Pm25 = 1,
 
     /// <summary>
-    /// 专业版
-    /// </summary>
-    Professional = 2,
-
-    /// <summary>
     /// 基础版
     /// </summary>
-    Basic = 3
+    Basic = 2,
+
+    /// <summary>
+    /// 专业版
+    /// </summary>
+    Professional = 3
 }

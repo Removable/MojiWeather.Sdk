@@ -27,74 +27,56 @@ public sealed record BriefConditionData
 public sealed record BriefCondition
 {
     /// <summary>
-    /// 温度(摄氏度)
-    /// </summary>
-    [JsonPropertyName("temp")]
-    public int Temperature { get; init; }
-
-    /// <summary>
-    /// 湿度(%)
-    /// </summary>
-    [JsonPropertyName("humidity")]
-    public int Humidity { get; init; }
-
-    /// <summary>
-    /// 能见度(米)
-    /// </summary>
-    [JsonPropertyName("vis")]
-    public int Visibility { get; init; }
-
-    /// <summary>
-    /// 风向角度(度)
-    /// </summary>
-    [JsonPropertyName("windDegrees")]
-    public int WindDegrees { get; init; }
-
-    /// <summary>
-    /// 风级
-    /// </summary>
-    [JsonPropertyName("windLevel")]
-    public int WindLevel { get; init; }
-
-    /// <summary>
-    /// 天气现象描述
+    /// 实时天气现象
     /// </summary>
     [JsonPropertyName("condition")]
-    public string? ConditionDescription { get; init; }
+    public string? Condition { get; init; }
 
     /// <summary>
-    /// 天气图标ID
+    /// 湿度 (%)
+    /// </summary>
+    [JsonPropertyName("humidity")]
+    public string? Humidity { get; init; }
+
+    /// <summary>
+    /// 天气icon
     /// </summary>
     [JsonPropertyName("icon")]
     public string? Icon { get; init; }
 
     /// <summary>
-    /// 更新时间
+    /// 温度 (摄氏度)
+    /// </summary>
+    [JsonPropertyName("temp")]
+    public string? Temperature { get; init; }
+
+    /// <summary>
+    /// 发布时间 (秒)
     /// </summary>
     [JsonPropertyName("updatetime")]
     public string? UpdateTime { get; init; }
 
     /// <summary>
-    /// 风向描述
+    /// 能见度 (m)
+    /// </summary>
+    [JsonPropertyName("vis")]
+    public string? Visibility { get; init; }
+
+    /// <summary>
+    /// 风向角度 (度)
+    /// </summary>
+    [JsonPropertyName("windDegrees")]
+    public string? WindDegrees { get; init; }
+
+    /// <summary>
+    /// 风向
     /// </summary>
     [JsonPropertyName("windDir")]
     public string? WindDirection { get; init; }
 
     /// <summary>
-    /// 气压(hPa)
+    /// 风级
     /// </summary>
-    [JsonPropertyName("pressure")]
-    public int Pressure { get; init; }
-
-    /// <summary>
-    /// 体感温度
-    /// </summary>
-    [JsonPropertyName("realFeel")]
-    public int RealFeel { get; init; }
-
-    /// <summary>
-    /// 提示信息
-    /// </summary>
-    [JsonPropertyName("tips")]
-    public string? Tips { get; init; }
+    [JsonPropertyName("windLevel")]
+    public string? WindLevel { get; init; }
 }

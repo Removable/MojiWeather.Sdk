@@ -14,50 +14,38 @@ public sealed record CityInfo
     public long CityId { get; init; }
 
     /// <summary>
-    /// 城市名称
+    /// 国家名称
     /// </summary>
-    [JsonPropertyName("city")]
-    public string? City { get; init; }
+    [JsonPropertyName("counname")]
+    public string? CountryName { get; init; }
 
     /// <summary>
-    /// 城市名称(别名)
+    /// IANA标准时区名称
+    /// </summary>
+    [JsonPropertyName("ianatimezone")]
+    public string? IanaTimezone { get; init; }
+
+    /// <summary>
+    /// 城市名称
     /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; init; }
 
     /// <summary>
-    /// 国家名称
-    /// </summary>
-    [JsonPropertyName("country")]
-    public string? Country { get; init; }
-
-    /// <summary>
-    /// 国家代码
-    /// </summary>
-    [JsonPropertyName("countryCode")]
-    public string? CountryCode { get; init; }
-
-    /// <summary>
     /// 省份名称
     /// </summary>
     [JsonPropertyName("pname")]
-    public string? Province { get; init; }
+    public string? ProvinceName { get; init; }
 
     /// <summary>
-    /// 纬度
-    /// </summary>
-    [JsonPropertyName("latitude")]
-    public double Latitude { get; init; }
-
-    /// <summary>
-    /// 经度
-    /// </summary>
-    [JsonPropertyName("longitude")]
-    public double Longitude { get; init; }
-
-    /// <summary>
-    /// 时区
+    /// 时区，相对于UTC时区的偏移量
     /// </summary>
     [JsonPropertyName("timezone")]
     public string? Timezone { get; init; }
+
+    /// <summary>
+    /// 上级城市名称
+    /// </summary>
+    [JsonPropertyName("secondaryname")]
+    public string? SecondaryName { get; init; }
 }
