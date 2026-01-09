@@ -29,14 +29,14 @@ public class ForecastServiceTests
         // Arrange
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
         var expectedEndpoint = new EndpointInfo("3天预报", "token", "https://test.api.com", "/forecast3days", SubscriptionTier.Trial);
-        var expectedResponse = ApiResponse<DailyForecastData>.Success(new DailyForecastData());
+        var expectedResponse = ApiResponse<BriefDailyForecastData>.Success(new BriefDailyForecastData());
 
         _endpointProvider.GetForecast3Days(location).Returns(expectedEndpoint);
-        _httpClient.SendAsync<DailyForecastData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
+        _httpClient.SendAsync<BriefDailyForecastData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
             .Returns(expectedResponse);
 
         // Act
-        var result = await _service.GetForecast3DaysAsync(location);
+        var result = await _service.GetBriefForecast3DaysAsync(location);
 
         // Assert
         result.Should().Be(expectedResponse);
@@ -49,14 +49,14 @@ public class ForecastServiceTests
         // Arrange
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
         var expectedEndpoint = new EndpointInfo("6天预报", "token", "https://test.api.com", "/forecast6days", SubscriptionTier.Pm25);
-        var expectedResponse = ApiResponse<DailyForecastData>.Success(new DailyForecastData());
+        var expectedResponse = ApiResponse<BriefDailyForecastData>.Success(new BriefDailyForecastData());
 
         _endpointProvider.GetForecast6Days(location).Returns(expectedEndpoint);
-        _httpClient.SendAsync<DailyForecastData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
+        _httpClient.SendAsync<BriefDailyForecastData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
             .Returns(expectedResponse);
 
         // Act
-        var result = await _service.GetForecast6DaysAsync(location);
+        var result = await _service.GetBriefForecast6DaysAsync(location);
 
         // Assert
         result.Should().Be(expectedResponse);

@@ -14,21 +14,21 @@ public sealed class ForecastService(
     IEndpointProvider endpointProvider) : IForecastService
 {
     /// <inheritdoc />
-    public async Task<ApiResponse<DailyForecastData>> GetForecast3DaysAsync(
+    public async Task<ApiResponse<BriefDailyForecastData>> GetBriefForecast3DaysAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
         var endpoint = endpointProvider.GetForecast3Days(location);
-        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await httpClient.SendAsync<BriefDailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
-    public async Task<ApiResponse<DailyForecastData>> GetForecast6DaysAsync(
+    public async Task<ApiResponse<BriefDailyForecastData>> GetBriefForecast6DaysAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default)
     {
         var endpoint = endpointProvider.GetForecast6Days(location);
-        return await httpClient.SendAsync<DailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
+        return await httpClient.SendAsync<BriefDailyForecastData>(endpoint, location, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

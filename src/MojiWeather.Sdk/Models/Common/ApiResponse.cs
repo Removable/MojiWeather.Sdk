@@ -55,7 +55,7 @@ public sealed record ApiResponse<T> where T : class
     {
         Code = code,
         Message = message,
-        Data = default
+        Data = null
     };
 }
 

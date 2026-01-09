@@ -9,16 +9,16 @@ namespace MojiWeather.Sdk.Abstractions;
 public interface IForecastService
 {
     /// <summary>
-    /// 获取3天天气预报
+    /// 获取3天精简天气预报
     /// </summary>
-    Task<ApiResponse<DailyForecastData>> GetForecast3DaysAsync(
+    Task<ApiResponse<BriefDailyForecastData>> GetBriefForecast3DaysAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// 获取6天天气预报
+    /// 获取6天天精简气预报
     /// </summary>
-    Task<ApiResponse<DailyForecastData>> GetForecast6DaysAsync(
+    Task<ApiResponse<BriefDailyForecastData>> GetBriefForecast6DaysAsync(
         LocationQuery location,
         CancellationToken cancellationToken = default);
 

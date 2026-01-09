@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json.Serialization;
 using MojiWeather.Sdk.Models.Common;
 
@@ -27,10 +28,14 @@ public sealed record AqiForecastData
 public sealed record AqiForecast
 {
     /// <summary>
-    /// 预测日期
+    /// 发布日期
     /// </summary>
-    [JsonPropertyName("date")]
-    public string? Date { get; init; }
+    [JsonPropertyName("publishTime")]
+    public required string PublishTime { get; init; }
+
+    [JsonPropertyName("PublishTimeValue")]
+    public DateTime PublishTimeValue =>
+        DateTime.ParseExact(PublishTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// AQI值
@@ -39,26 +44,11 @@ public sealed record AqiForecast
     public int Value { get; init; }
 
     /// <summary>
-    /// AQI等级描述
+    /// 预测日期
     /// </summary>
-    [JsonPropertyName("level")]
-    public string? Level { get; init; }
+    [JsonPropertyName("date")]
+    public required string Date { get; init; }
 
-    /// <summary>
-    /// 最小AQI值
-    /// </summary>
-    [JsonPropertyName("min")]
-    public int Min { get; init; }
-
-    /// <summary>
-    /// 最大AQI值
-    /// </summary>
-    [JsonPropertyName("max")]
-    public int Max { get; init; }
-
-    /// <summary>
-    /// 主要污染物
-    /// </summary>
-    [JsonPropertyName("primaryPollutant")]
-    public string? PrimaryPollutant { get; init; }
+    [JsonPropertyName("DateValue")]
+    public DateOnly DateValue => DateOnly.ParseExact(Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 }
