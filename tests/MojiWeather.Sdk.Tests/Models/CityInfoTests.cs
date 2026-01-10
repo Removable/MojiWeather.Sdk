@@ -34,4 +34,62 @@ public class CityInfoTests
         result.Timezone.Should().Be("+08:00");
         result.SecondaryName.Should().Be("Beijing");
     }
+
+    [Fact]
+    public void Deserialize_WithMissingFields_ShouldHandleGracefully()
+    {
+        const string json = """
+            {
+                "cityId": 101010100,
+                "name": "Beijing"
+            }
+            """;
+
+        var result = JsonSerializer.Deserialize<CityInfo>(json, MojiJsonContext.SerializerOptions);
+
+        result.Should().NotBeNull();
+        result!.CityId.Should().Be(101010100);
+        result.Name.Should().Be("Beijing");
+        result.CountryName.Should().BeNull();
+        result.IanaTimezone.Should().BeNull();
+        result.ProvinceName.Should().BeNull();
+        result.Timezone.Should().BeNull();
+        result.SecondaryName.Should().BeNull();
+    }
+
+    [Fact]
+    public void Deserialize_WithNullValues_ShouldSetNull()
+    {
+        const string json = """
+            {
+                "cityId": 101010100,
+                "counname": null,
+                "ianatimezone": null,
+                "secondaryname": null
+            }
+            """;
+
+        var result = JsonSerializer.Deserialize<CityInfo>(json, MojiJsonContext.SerializerOptions);
+
+        result.Should().NotBeNull();
+        result!.CountryName.Should().BeNull();
+        result.IanaTimezone.Should().BeNull();
+        result.SecondaryName.Should().BeNull();
+    }
+
+    [Fact]
+    public void Deserialize_WithEmptyString_ShouldPreserveValue()
+    {
+        const string json = """
+            {
+                "cityId": 101010100,
+                "secondaryname": ""
+            }
+            """;
+
+        var result = JsonSerializer.Deserialize<CityInfo>(json, MojiJsonContext.SerializerOptions);
+
+        result.Should().NotBeNull();
+        result!.SecondaryName.Should().BeEmpty();
+    }
 }

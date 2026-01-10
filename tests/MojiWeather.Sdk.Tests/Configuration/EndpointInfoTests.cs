@@ -28,23 +28,23 @@ public class EndpointInfoTests
         SubscriptionTier requiredTier,
         bool expectedResult)
     {
-        // Arrange
+        // 准备
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", requiredTier);
 
-        // Act
+        // 执行
         var result = endpoint.IsAccessibleWith(userTier);
 
-        // Assert
+        // 断言
         result.Should().Be(expectedResult);
     }
 
     [Fact]
     public void MojiWeatherOptions_ShouldHaveCorrectDefaults()
     {
-        // Arrange & Act
+        // 准备与执行
         var options = new MojiWeatherOptions { AppCode = "test" };
 
-        // Assert
+        // 断言
         options.Tier.Should().Be(SubscriptionTier.Trial);
         options.UseHttps.Should().BeTrue();
         options.Timeout.Should().Be(TimeSpan.FromSeconds(30));
@@ -55,11 +55,11 @@ public class EndpointInfoTests
     [Fact]
     public void MojiWeatherOptions_UseHttps_ShouldBeConfigurable()
     {
-        // Arrange & Act
+        // 准备与执行
         var httpsOptions = new MojiWeatherOptions { AppCode = "test", UseHttps = true };
         var httpOptions = new MojiWeatherOptions { AppCode = "test", UseHttps = false };
 
-        // Assert
+        // 断言
         httpsOptions.UseHttps.Should().BeTrue();
         httpOptions.UseHttps.Should().BeFalse();
     }

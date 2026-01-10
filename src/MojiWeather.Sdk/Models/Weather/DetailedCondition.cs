@@ -39,10 +39,22 @@ public sealed record DetailedCondition
     public string? ConditionId { get; init; }
 
     /// <summary>
+    /// 实时天气id数值
+    /// </summary>
+    [JsonIgnore]
+    public int? ConditionIdValue => int.TryParse(ConditionId, out var v) ? v : null;
+
+    /// <summary>
     /// 湿度(%)
     /// </summary>
     [JsonPropertyName("humidity")]
     public string? Humidity { get; init; }
+
+    /// <summary>
+    /// 湿度数值 (%)
+    /// </summary>
+    [JsonIgnore]
+    public int? HumidityValue => int.TryParse(Humidity, out var v) ? v : null;
 
     /// <summary>
     /// 天气图标ID
@@ -57,10 +69,22 @@ public sealed record DetailedCondition
     public string? Pressure { get; init; }
 
     /// <summary>
+    /// 气压数值 (百帕)
+    /// </summary>
+    [JsonIgnore]
+    public int? PressureValue => int.TryParse(Pressure, out var v) ? v : null;
+
+    /// <summary>
     /// 体感温度(摄氏度)
     /// </summary>
     [JsonPropertyName("realFeel")]
     public string? RealFeel { get; init; }
+
+    /// <summary>
+    /// 体感温度数值 (摄氏度)
+    /// </summary>
+    [JsonIgnore]
+    public int? RealFeelValue => int.TryParse(RealFeel, out var v) ? v : null;
 
     /// <summary>
     /// 日出时间(yyyy-MM-dd HH:mm:ss)
@@ -81,6 +105,12 @@ public sealed record DetailedCondition
     public string? Temperature { get; init; }
 
     /// <summary>
+    /// 温度数值 (摄氏度)
+    /// </summary>
+    [JsonIgnore]
+    public int? TemperatureValue => int.TryParse(Temperature, out var v) ? v : null;
+
+    /// <summary>
     /// 一句话提示
     /// </summary>
     [JsonPropertyName("tips")]
@@ -99,16 +129,34 @@ public sealed record DetailedCondition
     public string? UvIndex { get; init; }
 
     /// <summary>
+    /// 紫外线强度数值
+    /// </summary>
+    [JsonIgnore]
+    public int? UvIndexValue => int.TryParse(UvIndex, out var v) ? v : null;
+
+    /// <summary>
     /// 能见度(m)
     /// </summary>
     [JsonPropertyName("vis")]
     public string? Visibility { get; init; }
 
     /// <summary>
+    /// 能见度数值 (m)
+    /// </summary>
+    [JsonIgnore]
+    public int? VisibilityValue => int.TryParse(Visibility, out var v) ? v : null;
+
+    /// <summary>
     /// 风向角度(度)
     /// </summary>
     [JsonPropertyName("windDegrees")]
     public string? WindDegrees { get; init; }
+
+    /// <summary>
+    /// 风向角度数值 (度)
+    /// </summary>
+    [JsonIgnore]
+    public int? WindDegreesValue => int.TryParse(WindDegrees, out var v) ? v : null;
 
     /// <summary>
     /// 风向
@@ -123,8 +171,20 @@ public sealed record DetailedCondition
     public string? WindLevel { get; init; }
 
     /// <summary>
+    /// 风级数值
+    /// </summary>
+    [JsonIgnore]
+    public int? WindLevelValue => int.TryParse(WindLevel, out var v) ? v : null;
+
+    /// <summary>
     /// 风速(m/s)
     /// </summary>
     [JsonPropertyName("windSpeed")]
     public string? WindSpeed { get; init; }
+
+    /// <summary>
+    /// 风速数值 (m/s)
+    /// </summary>
+    [JsonIgnore]
+    public double? WindSpeedValue => double.TryParse(WindSpeed, out var v) ? v : null;
 }

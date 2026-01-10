@@ -9,6 +9,7 @@ using MojiWeather.Sdk.Exceptions;
 using MojiWeather.Sdk.Http;
 using MojiWeather.Sdk.Models.Common;
 using MojiWeather.Sdk.Models.Weather;
+using MojiWeather.Sdk.Tests.TestUtilities;
 using NSubstitute;
 using Xunit;
 
@@ -55,7 +56,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithInsufficientTier_ShouldReturnFailure()
     {
-        // Arrange
+        // 准备
         var trialOptions = Options.Create(new MojiWeatherOptions
         {
             AppCode = "test-appcode-12345",
@@ -69,10 +70,10 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Pro Only", "token123", "https://test.api.com", "/pro", SubscriptionTier.Professional);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act
+        // 执行
         var result = await client.SendAsync<BriefConditionData>(endpoint, location);
 
-        // Assert
+        // 断言
         result.IsSuccess.Should().BeFalse();
         result.Code.Should().Be(-1);
         result.Message.Should().Contain("Professional");
@@ -82,7 +83,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithUnauthorizedResponse_ShouldThrowAuthenticationException()
     {
-        // Arrange
+        // 准备
         var handler = new MockHttpMessageHandler("Unauthorized", HttpStatusCode.Unauthorized);
         var httpClient = new HttpClient(handler);
         var client = new MojiHttpClient(httpClient, _options, _logger);
@@ -90,7 +91,7 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act & Assert
+        // 执行并断言
         var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
         await act.Should().ThrowAsync<AuthenticationException>()
             .WithMessage("*Invalid AppCode*");
@@ -99,7 +100,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithInvalidJsonResponse_ShouldThrowApiException()
     {
-        // Arrange
+        // 准备
         var handler = new MockHttpMessageHandler("not valid json {{{", HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
         var client = new MojiHttpClient(httpClient, _options, _logger);
@@ -107,7 +108,7 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act & Assert
+        // 执行并断言
         var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
         await act.Should().ThrowAsync<ApiException>()
             .WithMessage("*Failed to parse*");
@@ -116,7 +117,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithNullResponse_ShouldThrowApiException()
     {
-        // Arrange
+        // 准备
         var handler = new MockHttpMessageHandler("null", HttpStatusCode.OK);
         var httpClient = new HttpClient(handler);
         var client = new MojiHttpClient(httpClient, _options, _logger);
@@ -124,7 +125,7 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act & Assert
+        // 执行并断言
         var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
         await act.Should().ThrowAsync<ApiException>()
             .WithMessage("*Failed to deserialize*");
@@ -133,7 +134,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithHttpRequestException_ShouldThrowApiException()
     {
-        // Arrange
+        // 准备
         var handler = new MockHttpMessageHandler(new HttpRequestException("Connection refused"));
         var httpClient = new HttpClient(handler);
         var client = new MojiHttpClient(httpClient, _options, _logger);
@@ -141,16 +142,16 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act & Assert
+        // 执行并断言
         var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
         await act.Should().ThrowAsync<ApiException>()
-            .WithMessage("*HTTP request failed*");
+            .WithMessage("*HTTP request*failed*");
     }
 
     [Fact]
     public async Task SendAsync_WithCityIdLocation_ShouldSendCorrectFormData()
     {
-        // Arrange
+        // 准备
         string? capturedContent = null;
         var handler = new MockHttpMessageHandler(async request =>
         {
@@ -168,10 +169,10 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCityId(101010100);
 
-        // Act
+        // 执行
         await client.SendAsync<BriefConditionData>(endpoint, location);
 
-        // Assert
+        // 断言
         capturedContent.Should().Contain("token=token123");
         capturedContent.Should().Contain("cityId=101010100");
     }
@@ -179,7 +180,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithCoordinatesLocation_ShouldSendCorrectFormData()
     {
-        // Arrange
+        // 准备
         string? capturedContent = null;
         var handler = new MockHttpMessageHandler(async request =>
         {
@@ -197,10 +198,10 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act
+        // 执行
         await client.SendAsync<BriefConditionData>(endpoint, location);
 
-        // Assert
+        // 断言
         capturedContent.Should().Contain("token=token123");
         capturedContent.Should().Contain("lat=39.9");
         capturedContent.Should().Contain("lon=116.4");
@@ -209,7 +210,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithAdditionalParameters_ShouldIncludeThemInFormData()
     {
-        // Arrange
+        // 准备
         string? capturedContent = null;
         var handler = new MockHttpMessageHandler(async request =>
         {
@@ -232,10 +233,10 @@ public class MojiHttpClientTests
             ["anotherParam"] = "anotherValue"
         };
 
-        // Act
+        // 执行
         await client.SendAsync<BriefConditionData>(endpoint, location, additionalParams);
 
-        // Assert
+        // 断言
         capturedContent.Should().Contain("customParam=customValue");
         capturedContent.Should().Contain("anotherParam=anotherValue");
     }
@@ -280,7 +281,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_ShouldIncludeAppCodeInAuthorizationHeader()
     {
-        // Arrange
+        // 准备
         string? authHeader = null;
         var handler = new MockHttpMessageHandler(request =>
         {
@@ -298,17 +299,17 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act
+        // 执行
         await client.SendAsync<BriefConditionData>(endpoint, location);
 
-        // Assert
+        // 断言
         authHeader.Should().Be("APPCODE test-appcode-12345");
     }
 
     [Fact]
     public async Task SendAsync_WithApiErrorResponse_ShouldReturnFailure()
     {
-        // Arrange
+        // 准备
         var errorResponse = ApiResponse<BriefConditionData>.Failure(500, "Internal server error");
         var json = JsonSerializer.Serialize(errorResponse);
 
@@ -319,10 +320,10 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act
+        // 执行
         var result = await client.SendAsync<BriefConditionData>(endpoint, location);
 
-        // Assert
+        // 断言
         result.IsSuccess.Should().BeFalse();
         result.Code.Should().Be(500);
         result.Message.Should().Be("Internal server error");
@@ -331,7 +332,7 @@ public class MojiHttpClientTests
     [Fact]
     public async Task SendAsync_WithCancellationToken_ShouldPassToHttpClient()
     {
-        // Arrange
+        // 准备
         var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -342,45 +343,79 @@ public class MojiHttpClientTests
         var endpoint = new EndpointInfo("Test", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
         var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        // Act & Assert
+        // 执行并断言
         var act = () => client.SendAsync<BriefConditionData>(endpoint, location, cancellationToken: cts.Token);
         await act.Should().ThrowAsync<OperationCanceledException>();
     }
 
-    /// <summary>
-    /// Mock HTTP message handler for testing
-    /// </summary>
-    private class MockHttpMessageHandler : HttpMessageHandler
+    [Fact]
+    public async Task SendAsync_WithHttpRequestException_ShouldIncludeEndpointNameInMessage()
     {
-        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _handler;
+        // 准备
+        var handler = new MockHttpMessageHandler(new HttpRequestException("Connection refused"));
+        var httpClient = new HttpClient(handler);
+        var client = new MojiHttpClient(httpClient, _options, _logger);
 
-        public MockHttpMessageHandler(string responseContent, HttpStatusCode statusCode)
-        {
-            _handler = _ => Task.FromResult(new HttpResponseMessage(statusCode)
-            {
-                Content = new StringContent(responseContent)
-            });
-        }
+        var endpoint = new EndpointInfo("BriefCondition", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
+        var location = LocationQuery.FromCoordinates(39.9, 116.4);
 
-        public MockHttpMessageHandler(Exception exception)
-        {
-            _handler = _ => throw exception;
-        }
-
-        public MockHttpMessageHandler(Func<HttpRequestMessage, HttpResponseMessage> handler)
-        {
-            _handler = request => Task.FromResult(handler(request));
-        }
-
-        public MockHttpMessageHandler(Func<HttpRequestMessage, Task<HttpResponseMessage>> handler)
-        {
-            _handler = handler;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            return _handler(request);
-        }
+        // 执行并断言
+        var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
+        await act.Should().ThrowAsync<ApiException>()
+            .WithMessage("*'BriefCondition'*");
     }
+
+    [Fact]
+    public async Task SendAsync_WithInvalidJsonResponse_ShouldIncludeResponsePreviewInMessage()
+    {
+        // 准备
+        var invalidJson = "this is not valid json content for testing preview";
+        var handler = new MockHttpMessageHandler(invalidJson, HttpStatusCode.OK);
+        var httpClient = new HttpClient(handler);
+        var client = new MojiHttpClient(httpClient, _options, _logger);
+
+        var endpoint = new EndpointInfo("TestEndpoint", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
+        var location = LocationQuery.FromCoordinates(39.9, 116.4);
+
+        // 执行并断言
+        var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
+        var exception = await act.Should().ThrowAsync<ApiException>();
+        exception.Which.Message.Should().Contain("'TestEndpoint'");
+        exception.Which.Message.Should().Contain("this is not valid json");
+    }
+
+    [Fact]
+    public async Task SendAsync_WithNullResponse_ShouldIncludeEndpointNameInMessage()
+    {
+        // 准备
+        var handler = new MockHttpMessageHandler("null", HttpStatusCode.OK);
+        var httpClient = new HttpClient(handler);
+        var client = new MojiHttpClient(httpClient, _options, _logger);
+
+        var endpoint = new EndpointInfo("DetailedAqi", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
+        var location = LocationQuery.FromCoordinates(39.9, 116.4);
+
+        // 执行并断言
+        var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
+        await act.Should().ThrowAsync<ApiException>()
+            .WithMessage("*'DetailedAqi'*");
+    }
+
+    [Fact]
+    public async Task SendAsync_WithUnauthorizedResponse_ShouldIncludeEndpointNameInMessage()
+    {
+        // 准备
+        var handler = new MockHttpMessageHandler("Unauthorized", HttpStatusCode.Unauthorized);
+        var httpClient = new HttpClient(handler);
+        var client = new MojiHttpClient(httpClient, _options, _logger);
+
+        var endpoint = new EndpointInfo("Forecast15Days", "token123", "https://test.api.com", "/test", SubscriptionTier.Trial);
+        var location = LocationQuery.FromCoordinates(39.9, 116.4);
+
+        // 执行并断言
+        var act = () => client.SendAsync<BriefConditionData>(endpoint, location);
+        await act.Should().ThrowAsync<AuthenticationException>()
+            .WithMessage("*'Forecast15Days'*");
+    }
+
 }
