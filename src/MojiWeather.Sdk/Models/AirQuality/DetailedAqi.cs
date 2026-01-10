@@ -163,7 +163,7 @@ public sealed record DetailedAqi
     /// <summary>
     /// 臭氧浓度(μg/m³)
     /// </summary>
-    [JsonPropertyName(("o3C"))]
+    [JsonPropertyName("o3C")]
     public required string O3Concentration { get; init; }
 
     /// <summary>
