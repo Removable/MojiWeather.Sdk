@@ -1,7 +1,6 @@
 using FluentAssertions;
-using MojiWeather.Sdk.Abstractions;
 using MojiWeather.Sdk.Configuration;
-using MojiWeather.Sdk.Http;
+using MojiWeather.Sdk.Exceptions;
 using MojiWeather.Sdk.Models.Common;
 using MojiWeather.Sdk.Models.LiveIndex;
 using MojiWeather.Sdk.Services;
@@ -10,79 +9,127 @@ using Xunit;
 
 namespace MojiWeather.Sdk.Tests.Services;
 
-public class LiveIndexServiceTests
+public class LiveIndexServiceTests : ServiceTestBase<LiveIndexService>
 {
-    private readonly IMojiHttpClient _httpClient;
-    private readonly IEndpointProvider _endpointProvider;
-    private readonly LiveIndexService _service;
-
-    public LiveIndexServiceTests()
-    {
-        _httpClient = Substitute.For<IMojiHttpClient>();
-        _endpointProvider = Substitute.For<IEndpointProvider>();
-        _service = new LiveIndexService(_httpClient, _endpointProvider);
-    }
+    protected override LiveIndexService CreateService() => new(HttpClient, EndpointProvider);
 
     [Fact]
     public async Task GetLiveIndexAsync_ShouldCallHttpClientWithCorrectEndpoint()
     {
-        // Arrange
-        var location = LocationQuery.FromCoordinates(39.9, 116.4);
+        // 准备
+        var location = CreateCoordinatesLocation();
         var expectedEndpoint = new EndpointInfo("LiveIndex", "token", "https://test.api.com", "/test/index", SubscriptionTier.Professional);
         var expectedResponse = ApiResponse<LiveIndexData>.Success(new LiveIndexData());
 
-        _endpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
-        _httpClient.SendAsync<LiveIndexData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
-            .Returns(expectedResponse);
+        EndpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
+        SetupResponse(expectedEndpoint, location, expectedResponse);
 
-        // Act
-        var result = await _service.GetLiveIndexAsync(location);
+        // 执行
+        var result = await Service.GetLiveIndexAsync(location);
 
-        // Assert
+        // 断言
         result.Should().Be(expectedResponse);
-        _endpointProvider.Received(1).GetLiveIndex(location);
-        await _httpClient.Received(1).SendAsync<LiveIndexData>(
-            expectedEndpoint, location, null, Arg.Any<CancellationToken>());
+        EndpointProvider.Received(1).GetLiveIndex(location);
+        await VerifySendAsyncCalled<LiveIndexData>(expectedEndpoint, location);
     }
 
     [Fact]
     public async Task GetLiveIndexAsync_WithCityIdQuery_ShouldWork()
     {
-        // Arrange
-        var location = LocationQuery.FromCityId(101010100);
+        // 准备
+        var location = CreateCityLocation();
         var expectedEndpoint = new EndpointInfo("LiveIndex", "token", "https://test.api.com", "/test/index", SubscriptionTier.Professional);
         var expectedResponse = ApiResponse<LiveIndexData>.Success(new LiveIndexData());
 
-        _endpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
-        _httpClient.SendAsync<LiveIndexData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
-            .Returns(expectedResponse);
+        EndpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
+        SetupResponse(expectedEndpoint, location, expectedResponse);
 
-        // Act
-        var result = await _service.GetLiveIndexAsync(location);
+        // 执行
+        var result = await Service.GetLiveIndexAsync(location);
 
-        // Assert
+        // 断言
         result.Should().Be(expectedResponse);
-        _endpointProvider.Received(1).GetLiveIndex(location);
+        EndpointProvider.Received(1).GetLiveIndex(location);
     }
 
     [Fact]
     public async Task GetLiveIndexAsync_WithCancellation_ShouldPassCancellationToken()
     {
-        // Arrange
-        var location = LocationQuery.FromCoordinates(39.9, 116.4);
+        // 准备
+        var location = CreateCoordinatesLocation();
         var expectedEndpoint = new EndpointInfo("LiveIndex", "token", "https://test.api.com", "/test/index", SubscriptionTier.Professional);
         var cts = new CancellationTokenSource();
         var expectedResponse = ApiResponse<LiveIndexData>.Success(new LiveIndexData());
 
-        _endpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
-        _httpClient.SendAsync<LiveIndexData>(expectedEndpoint, location, null, cts.Token)
-            .Returns(expectedResponse);
+        EndpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
+        SetupResponse(expectedEndpoint, location, expectedResponse, cts.Token);
 
-        // Act
-        var result = await _service.GetLiveIndexAsync(location, cts.Token);
+        // 执行
+        await Service.GetLiveIndexAsync(location, cts.Token);
 
-        // Assert
-        await _httpClient.Received(1).SendAsync<LiveIndexData>(
-            expectedEndpoint, location, null, cts.Token);
+        // 断言
+        await VerifySendAsyncCalled<LiveIndexData>(expectedEndpoint, location, cts.Token);
+    }
+
+    [Fact]
+    public async Task GetLiveIndexAsync_WhenHttpClientThrows_ShouldPropagateException()
+    {
+        // 准备
+        var location = CreateCoordinatesLocation();
+        var expectedEndpoint = new EndpointInfo("LiveIndex", "token", "https://test.api.com", "/test/index", SubscriptionTier.Professional);
+        var exception = new HttpRequestException("boom");
+
+        EndpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
+        HttpClient.SendAsync<LiveIndexData>(expectedEndpoint, location, null, Arg.Any<CancellationToken>())
+            .Returns(Task.FromException<ApiResponse<LiveIndexData>>(exception));
+
+        // 执行
+        var action = () => Service.GetLiveIndexAsync(location);
+
+        // 断言
+        await action.Should().ThrowAsync<HttpRequestException>()
+            .WithMessage("*boom*");
+    }
+
+    [Fact]
+    public async Task GetLiveIndexAsync_WhenEndpointProviderThrowsTierException_ShouldPropagateException()
+    {
+        // 准备
+        var location = CreateCoordinatesLocation();
+        var exception = new SubscriptionTierNotSupportedException(
+            "生活指数",
+            "经纬度",
+            SubscriptionTier.Trial,
+            new[] { SubscriptionTier.Professional });
+
+        EndpointProvider.When(provider => provider.GetLiveIndex(location))
+            .Do(_ => throw exception);
+
+        // 执行
+        var action = () => Service.GetLiveIndexAsync(location);
+
+        // 断言
+        await action.Should().ThrowAsync<SubscriptionTierNotSupportedException>()
+            .WithMessage("*生活指数*");
+    }
+
+    [Fact]
+    public async Task GetLiveIndexAsync_WhenResponseFails_ShouldReturnFailure()
+    {
+        // 准备
+        var location = CreateCoordinatesLocation();
+        var expectedEndpoint = new EndpointInfo("LiveIndex", "token", "https://test.api.com", "/test/index", SubscriptionTier.Professional);
+        var expectedResponse = ApiResponse<LiveIndexData>.Failure(503, "失败");
+
+        EndpointProvider.GetLiveIndex(location).Returns(expectedEndpoint);
+        SetupResponse(expectedEndpoint, location, expectedResponse);
+
+        // 执行
+        var result = await Service.GetLiveIndexAsync(location);
+
+        // 断言
+        result.IsSuccess.Should().BeFalse();
+        result.Code.Should().Be(503);
+        result.Message.Should().Be("失败");
     }
 }

@@ -22,72 +22,100 @@ public sealed class EndpointTokens
 }
 
 /// <summary>
-/// 经纬度查询方式的端点Token
+/// 共享端点Token基类
 /// </summary>
-public sealed class CoordinatesTokens
+/// <remarks>
+/// 包含经纬度查询和城市ID查询共有的端点Token
+/// </remarks>
+public abstract class BaseEndpointTokens
 {
     /// <summary>
     /// 精简AQI Token
     /// </summary>
-    public string BriefAqi { get; set; } = DefaultTokens.Coordinates.BriefAqi;
+    public string BriefAqi { get; set; } = "";
 
     /// <summary>
     /// 精简实况 Token
     /// </summary>
-    public string BriefCondition { get; set; } = DefaultTokens.Coordinates.BriefCondition;
+    public string BriefCondition { get; set; } = "";
 
     /// <summary>
     /// 精简预报3天 Token
     /// </summary>
-    public string Forecast3Days { get; set; } = DefaultTokens.Coordinates.Forecast3Days;
+    public string Forecast3Days { get; set; } = "";
 
     /// <summary>
     /// 天气预警 Token
     /// </summary>
-    public string Alert { get; set; } = DefaultTokens.Coordinates.Alert;
+    public string Alert { get; set; } = "";
 
     /// <summary>
     /// 空气质量指数 Token
     /// </summary>
-    public string DetailedAqi { get; set; } = DefaultTokens.Coordinates.DetailedAqi;
+    public string DetailedAqi { get; set; } = "";
 
     /// <summary>
     /// 精简预报6天 Token
     /// </summary>
-    public string Forecast6Days { get; set; } = DefaultTokens.Coordinates.Forecast6Days;
+    public string Forecast6Days { get; set; } = "";
 
     /// <summary>
     /// 限行数据 Token
     /// </summary>
-    public string TrafficRestriction { get; set; } = DefaultTokens.Coordinates.TrafficRestriction;
+    public string TrafficRestriction { get; set; } = "";
 
     /// <summary>
     /// AQI预报5天 Token
     /// </summary>
-    public string AqiForecast5Days { get; set; } = DefaultTokens.Coordinates.AqiForecast5Days;
+    public string AqiForecast5Days { get; set; } = "";
 
     /// <summary>
     /// 天气实况 Token
     /// </summary>
-    public string DetailedCondition { get; set; } = DefaultTokens.Coordinates.DetailedCondition;
+    public string DetailedCondition { get; set; } = "";
 
     /// <summary>
     /// 天气预报15天 Token
     /// </summary>
-    public string Forecast15Days { get; set; } = DefaultTokens.Coordinates.Forecast15Days;
+    public string Forecast15Days { get; set; } = "";
 
     /// <summary>
     /// 天气预报24小时 Token
     /// </summary>
-    public string Forecast24Hours { get; set; } = DefaultTokens.Coordinates.Forecast24Hours;
+    public string Forecast24Hours { get; set; } = "";
 
     /// <summary>
     /// 生活指数 Token
     /// </summary>
-    public string LiveIndex { get; set; } = DefaultTokens.Coordinates.LiveIndex;
+    public string LiveIndex { get; set; } = "";
+}
+
+/// <summary>
+/// 经纬度查询方式的端点Token
+/// </summary>
+public sealed class CoordinatesTokens : BaseEndpointTokens
+{
+    /// <summary>
+    /// 初始化经纬度查询Token，设置默认值
+    /// </summary>
+    public CoordinatesTokens()
+    {
+        BriefAqi = DefaultTokens.Coordinates.BriefAqi;
+        BriefCondition = DefaultTokens.Coordinates.BriefCondition;
+        Forecast3Days = DefaultTokens.Coordinates.Forecast3Days;
+        Alert = DefaultTokens.Coordinates.Alert;
+        DetailedAqi = DefaultTokens.Coordinates.DetailedAqi;
+        Forecast6Days = DefaultTokens.Coordinates.Forecast6Days;
+        TrafficRestriction = DefaultTokens.Coordinates.TrafficRestriction;
+        AqiForecast5Days = DefaultTokens.Coordinates.AqiForecast5Days;
+        DetailedCondition = DefaultTokens.Coordinates.DetailedCondition;
+        Forecast15Days = DefaultTokens.Coordinates.Forecast15Days;
+        Forecast24Hours = DefaultTokens.Coordinates.Forecast24Hours;
+        LiveIndex = DefaultTokens.Coordinates.LiveIndex;
+    }
 
     /// <summary>
-    /// 短时预报 Token
+    /// 短时预报 Token (仅经纬度查询支持)
     /// </summary>
     public string ShortForecast { get; set; } = DefaultTokens.Coordinates.ShortForecast;
 }
@@ -95,67 +123,26 @@ public sealed class CoordinatesTokens
 /// <summary>
 /// 城市ID查询方式的端点Token
 /// </summary>
-public sealed class CityIdTokens
+public sealed class CityIdTokens : BaseEndpointTokens
 {
     /// <summary>
-    /// 精简AQI Token
+    /// 初始化城市ID查询Token，设置默认值
     /// </summary>
-    public string BriefAqi { get; set; } = DefaultTokens.CityId.BriefAqi;
-
-    /// <summary>
-    /// 精简实况 Token
-    /// </summary>
-    public string BriefCondition { get; set; } = DefaultTokens.CityId.BriefCondition;
-
-    /// <summary>
-    /// 精简预报3天 Token
-    /// </summary>
-    public string Forecast3Days { get; set; } = DefaultTokens.CityId.Forecast3Days;
-
-    /// <summary>
-    /// 天气预警 Token
-    /// </summary>
-    public string Alert { get; set; } = DefaultTokens.CityId.Alert;
-
-    /// <summary>
-    /// 空气质量指数 Token
-    /// </summary>
-    public string DetailedAqi { get; set; } = DefaultTokens.CityId.DetailedAqi;
-
-    /// <summary>
-    /// 精简预报6天 Token
-    /// </summary>
-    public string Forecast6Days { get; set; } = DefaultTokens.CityId.Forecast6Days;
-
-    /// <summary>
-    /// 限行数据 Token
-    /// </summary>
-    public string TrafficRestriction { get; set; } = DefaultTokens.CityId.TrafficRestriction;
-
-    /// <summary>
-    /// AQI预报5天 Token
-    /// </summary>
-    public string AqiForecast5Days { get; set; } = DefaultTokens.CityId.AqiForecast5Days;
-
-    /// <summary>
-    /// 天气实况 Token
-    /// </summary>
-    public string DetailedCondition { get; set; } = DefaultTokens.CityId.DetailedCondition;
-
-    /// <summary>
-    /// 天气预报15天 Token
-    /// </summary>
-    public string Forecast15Days { get; set; } = DefaultTokens.CityId.Forecast15Days;
-
-    /// <summary>
-    /// 天气预报24小时 Token
-    /// </summary>
-    public string Forecast24Hours { get; set; } = DefaultTokens.CityId.Forecast24Hours;
-
-    /// <summary>
-    /// 生活指数 Token
-    /// </summary>
-    public string LiveIndex { get; set; } = DefaultTokens.CityId.LiveIndex;
+    public CityIdTokens()
+    {
+        BriefAqi = DefaultTokens.CityId.BriefAqi;
+        BriefCondition = DefaultTokens.CityId.BriefCondition;
+        Forecast3Days = DefaultTokens.CityId.Forecast3Days;
+        Alert = DefaultTokens.CityId.Alert;
+        DetailedAqi = DefaultTokens.CityId.DetailedAqi;
+        Forecast6Days = DefaultTokens.CityId.Forecast6Days;
+        TrafficRestriction = DefaultTokens.CityId.TrafficRestriction;
+        AqiForecast5Days = DefaultTokens.CityId.AqiForecast5Days;
+        DetailedCondition = DefaultTokens.CityId.DetailedCondition;
+        Forecast15Days = DefaultTokens.CityId.Forecast15Days;
+        Forecast24Hours = DefaultTokens.CityId.Forecast24Hours;
+        LiveIndex = DefaultTokens.CityId.LiveIndex;
+    }
 }
 
 /// <summary>

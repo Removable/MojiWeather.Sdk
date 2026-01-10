@@ -28,14 +28,16 @@ public sealed record AqiForecastData
 public sealed record AqiForecast
 {
     /// <summary>
-    /// 发布日期
+    /// 发布日期 (yyyy-MM-dd HH:mm:ss)
     /// </summary>
     [JsonPropertyName("publishTime")]
     public required string PublishTime { get; init; }
 
-    [JsonPropertyName("PublishTimeValue")]
-    public DateTime PublishTimeValue =>
-        DateTime.ParseExact(PublishTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+    /// <summary>
+    /// 发布时间
+    /// </summary>
+    [JsonIgnore]
+    public DateTime? PublishTimeValue => DateTime.TryParseExact(PublishTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) ? dt : null;
 
     /// <summary>
     /// AQI值
@@ -44,11 +46,14 @@ public sealed record AqiForecast
     public int Value { get; init; }
 
     /// <summary>
-    /// 预测日期
+    /// 预测日期 (yyyy-MM-dd)
     /// </summary>
     [JsonPropertyName("date")]
     public required string Date { get; init; }
 
-    [JsonPropertyName("DateValue")]
-    public DateOnly DateValue => DateOnly.ParseExact(Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+    /// <summary>
+    /// 预测日期
+    /// </summary>
+    [JsonIgnore]
+    public DateOnly? DateValue => DateOnly.TryParseExact(Date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var d) ? d : null;
 }

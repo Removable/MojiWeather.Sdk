@@ -33,6 +33,12 @@ public sealed record BriefAqi
     public required string Value { get; init; }
 
     /// <summary>
+    /// AQI数值
+    /// </summary>
+    [JsonIgnore]
+    public int? ValueNumber => int.TryParse(Value, out var v) ? v : null;
+
+    /// <summary>
     /// 城市名称
     /// </summary>
     [JsonPropertyName("cityName")]
@@ -45,8 +51,16 @@ public sealed record BriefAqi
     public required string PublishTimestamp { get; init; }
 
     /// <summary>
+    /// 更新时间戳数值 (毫秒)
+    /// </summary>
+    [JsonIgnore]
+    public long? PublishTimestampValue => long.TryParse(PublishTimestamp, out var v) ? v : null;
+
+    /// <summary>
     /// 更新时间
     /// </summary>
-    [JsonPropertyName("publishTime")]
-    public DateTimeOffset PublishTime => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(PublishTimestamp));
+    [JsonIgnore]
+    public DateTimeOffset? PublishTime => PublishTimestampValue.HasValue
+        ? DateTimeOffset.FromUnixTimeMilliseconds(PublishTimestampValue.Value)
+        : null;
 }

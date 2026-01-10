@@ -11,16 +11,16 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithValidOptions_ShouldSucceed()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345"
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeTrue();
     }
 
@@ -30,16 +30,16 @@ public class MojiWeatherOptionsValidatorTests
     [InlineData("   ")]
     public void Validate_WithMissingAppCode_ShouldFail(string? appCode)
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = appCode!
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("AppCode is required");
     }
@@ -47,16 +47,16 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithShortAppCode_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "short"
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("AppCode appears to be invalid");
     }
@@ -64,17 +64,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithZeroTimeout_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Timeout = TimeSpan.Zero
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("Timeout must be greater than zero");
     }
@@ -82,17 +82,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithExcessiveTimeout_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Timeout = TimeSpan.FromMinutes(10)
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("Timeout should not exceed 5 minutes");
     }
@@ -100,17 +100,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithNegativeMaxRetries_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Retry = new RetryOptions { MaxRetries = -1 }
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("MaxRetries cannot be negative");
     }
@@ -118,17 +118,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithExcessiveMaxRetries_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Retry = new RetryOptions { MaxRetries = 20 }
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("MaxRetries should not exceed 10");
     }
@@ -136,17 +136,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithNegativeInitialDelay_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Retry = new RetryOptions { InitialDelay = TimeSpan.FromSeconds(-1) }
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("InitialDelay cannot be negative");
     }
@@ -154,17 +154,17 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithBackoffMultiplierLessThanOne_ShouldFail()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "valid-appcode-12345",
             Retry = new RetryOptions { BackoffMultiplier = 0.5 }
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         result.FailureMessage.Should().Contain("BackoffMultiplier must be at least 1.0");
     }
@@ -172,7 +172,7 @@ public class MojiWeatherOptionsValidatorTests
     [Fact]
     public void Validate_WithMultipleErrors_ShouldReportAllErrors()
     {
-        // Arrange
+        // 准备
         var options = new MojiWeatherOptions
         {
             AppCode = "",
@@ -180,10 +180,10 @@ public class MojiWeatherOptionsValidatorTests
             Retry = new RetryOptions { MaxRetries = -1 }
         };
 
-        // Act
+        // 执行
         var result = _validator.Validate(null, options);
 
-        // Assert
+        // 断言
         result.Succeeded.Should().BeFalse();
         // Should contain multiple error messages
         result.FailureMessage.Should().Contain("AppCode");

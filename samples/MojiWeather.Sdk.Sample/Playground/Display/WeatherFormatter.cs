@@ -286,7 +286,7 @@ public static class WeatherFormatter
         }
 
         ConsoleHelper.WriteKeyValue("城市", aqi.CityName);
-        ConsoleHelper.WriteKeyValue("更新时间", aqi.PublishTime.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        ConsoleHelper.WriteKeyValue("更新时间", aqi.PublishTime?.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A");
     }
 
     /// <summary>
@@ -317,7 +317,7 @@ public static class WeatherFormatter
         ConsoleHelper.WriteKeyValue("O3", $"{aqi.O3Concentration} μg/m³");
         ConsoleHelper.WriteKeyValue("SO2", $"{aqi.So2Concentration} μg/m³");
 
-        ConsoleHelper.WriteKeyValue("更新时间", aqi.PublishTime.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        ConsoleHelper.WriteKeyValue("更新时间", aqi.PublishTime?.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A");
     }
 
     /// <summary>
