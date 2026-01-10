@@ -177,5 +177,4 @@ public class ServiceRegistrationTests
         return httpClient;
     }
 
-    
 }
