@@ -15,16 +15,17 @@
 ### 功能特性
 
 - 🌤️ **天气实况** - 获取精简/详细天气实况
-- 📅 **天气预报** - 支持 3/6/15 天预报和 24 小时预报
+- 📅 **天气预报** - 支持 3/6/15 天预报、24 小时和短时预报
 - 🌫️ **空气质量** - AQI 指数、污染物数据、5 天预报
 - ⚠️ **天气预警** - 实时天气预警信息
 - 🏃 **生活指数** - 穿衣、运动、洗车等生活指数
 - 🚗 **限行数据** - 城市车辆限行信息
+- ⏱️ **短时预报** - 仅支持经纬度查询（专业版）
 
 ### 安装
 
 ```bash
-dotnet add package MojiWeather.Sdk
+dotnet add package Removable.MojiWeather.Sdk
 ```
 
 ### 快速开始
@@ -129,8 +130,8 @@ var location = LocationQuery.FromCityId(101010100);
 |------|--------|----------|
 | 试用版 | `SubscriptionTier.Trial` | 精简实况、精简AQI、3天预报 |
 | PM2.5版 | `SubscriptionTier.Pm25` | + 详细AQI、6天预报、预警、限行 |
-| 专业版 | `SubscriptionTier.Professional` | + 详细实况、15天预报、24小时、生活指数 |
-| 基础版 | `SubscriptionTier.Basic` | 详细实况（城市ID） |
+| 基础版 | `SubscriptionTier.Basic` | 详细实况（仅 CityID）、详细AQI、6天预报、预警、限行 |
+| 专业版 | `SubscriptionTier.Professional` | + 详细实况、15天预报、24小时、短时预报、生活指数 |
 
 ### 高级配置
 
@@ -194,16 +195,17 @@ catch (ApiException ex)
 ### Features
 
 - 🌤️ **Current Weather** - Brief and detailed weather conditions
-- 📅 **Weather Forecast** - 3/6/15 day forecasts and 24-hour forecasts
+- 📅 **Weather Forecast** - 3/6/15 day forecasts, 24-hour and short-term forecasts
 - 🌫️ **Air Quality** - AQI index, pollutant data, 5-day forecast
 - ⚠️ **Weather Alerts** - Real-time weather warnings
 - 🏃 **Living Index** - Clothing, sports, car washing indices
 - 🚗 **Traffic Restrictions** - City vehicle restriction information
+- ⏱️ **Short-Term Forecast** - Coordinates-only (Professional tier)
 
 ### Installation
 
 ```bash
-dotnet add package MojiWeather.Sdk
+dotnet add package Removable.MojiWeather.Sdk
 ```
 
 ### Quick Start
@@ -285,5 +287,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Links
 
-- [阿里云 API 市场 - 墨迹天气](https://market.aliyun.com/products/57126001/cmapi010812.html)
-- [墨迹天气 API 文档](https://market.aliyun.com/products/57126001/cmapi010812.html#sku=yuncode481200000)
+- [阿里云 API 市场 - 墨迹天气](https://market.aliyun.com/products?k=%E5%A2%A8%E8%BF%B9%E5%A4%A9%E6%B0%94&scene=market)
